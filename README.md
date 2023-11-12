@@ -307,25 +307,14 @@ Establece un sistema de monitoreo continuo para supervisar el rendimiento y la i
 11. Alarmas:
 Implementar alarmas en caso que un proceso falle, asi se puede saber en el momento y no esperar hasta el final.
 <br />
+<br />
 Si estuvieramos en BigQuery, lo mismo seria:
-1. Transacciones en BigQuery:
-BigQuery no admite transacciones en el sentido tradicional, ya que está diseñado para consultas analíticas a gran escala. Sin embargo, las operaciones individuales son atómicas. Puedes organizar tu proceso de ETL de manera que las operaciones críticas (como la actualización de datos en la tabla resumen_diario) se realicen en pasos separados y puedan ser revertidas en caso de errores.
-2. Jobs Programados:
-Usa la funcionalidad de programación de trabajos (jobs) en BigQuery para ejecutar el proceso ETL de manera programada y automática a las 23:59 horas todos los días.
-3. Partitioning (costos) y Clustering (en caso que sea muuucha data):
-Aprovecha las capacidades de particionamiento y clustering en BigQuery. Puedes particionar la tabla resumen_diario por fecha para facilitar la administración de datos diarios y mejorar el rendimiento de las consultas.
-4. Operaciones Atómicas con Copia de Tabla:
-Realiza operaciones de copia de tabla para aplicar cambios atómicamente. Puedes realizar una copia de la tabla existente, aplicar las transformaciones necesarias en la nueva copia y luego reemplazar la tabla original con la copia. Esto ayuda a garantizar que la tabla resumen_diario se actualice de manera coherente.
-5. Auditoría y Registro de Cambios (Dataplex - Linage):
-Utiliza la funcionalidad de auditoría y registro de cambios en BigQuery para realizar un seguimiento de las modificaciones en la tabla resumen_diario. Puedes consultar los registros de auditoría para identificar y corregir problemas de consistencia.
-6. Validaciones y Limpieza de Datos:
-Realiza validaciones de datos antes de ejecutar el proceso ETL. Puedes usar consultas SQL para identificar y corregir posibles problemas de datos antes de cargarlos en la tabla resumen_diario.
-7. Uso de Cloud Functions:
-Si necesitas ejecutar procesos adicionales o realizar acciones específicas antes o después del proceso ETL, considera integrar Google Cloud Functions en tu flujo de trabajo.
-8. Alertas y Monitoreo:
-Configura alertas para recibir notificaciones en caso de que haya errores o desviaciones inesperadas durante el proceso ETL. Puedes usar Google Cloud Monitoring para monitorear la salud de tu sistema.
-9. Backup y Snapshots:
-Realiza copias de seguridad periódicas o crea snapshots de tu dataset en BigQuery antes de ejecutar el proceso ETL. Esto proporcionará un punto de recuperación en caso de problemas.
+1. Elemento 1
+2. Elemento 2
+3. Elemento 3
+4. asd
+
+
 
 
 ```
