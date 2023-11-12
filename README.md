@@ -308,19 +308,74 @@ Establece un sistema de monitoreo continuo para supervisar el rendimiento y la i
 Implementar alarmas en caso que un proceso falle, asi se puede saber en el momento y no esperar hasta el final.
 <br />
 <br />
+
 Si estuvieramos en BigQuery, lo mismo seria:
-1. Elemento 1
-2. Elemento 2
-3. Elemento 3
-4. asd
 
+1. Transacciones en BigQuery:
+BigQuery no admite transacciones en el sentido tradicional, ya que está diseñado para consultas analíticas a gran escala. Sin embargo, las operaciones individuales son atómicas. Puedes organizar tu proceso de ETL de manera que las operaciones críticas (como la actualización de datos en la tabla resumen_diario) se realicen en pasos separados y puedan ser revertidas en caso de errores.
+2. Jobs Programados (Scheduler):
+Usa la funcionalidad de programación de trabajos (jobs) en BigQuery para ejecutar el proceso ETL de manera programada y automática a las 23:59 horas todos los días.
+3. Partitioning (costos) y Clustering :
+Aprovecha las capacidades de particionamiento y clustering en BigQuery. Puedes particionar la tabla resumen_diario por fecha para facilitar la administración de datos diarios y mejorar el rendimiento de las consultas.
+4. Operaciones Atómicas con Copia de Tabla:
+Realiza operaciones de copia de tabla para aplicar cambios atómicamente. Puedes realizar una copia de la tabla existente, aplicar las transformaciones necesarias en la nueva copia y luego reemplazar la tabla original con la copia. Esto ayuda a garantizar que la tabla resumen_diario se actualice de manera coherente
+5. Auditoría y Registro de Cambios:
+Utiliza la funcionalidad de auditoría y registro de cambios en BigQuery para realizar un seguimiento de las modificaciones en la tabla resumen_diario. Puedes consultar los registros de auditoría para identificar y corregir problemas de consistencia.
+6. Validaciones y Limpieza de Datos:
+Realiza validaciones de datos antes de ejecutar el proceso ETL. Puedes usar consultas SQL para identificar y corregir posibles problemas de datos antes de cargarlos en la tabla resumen_diario.
+7. so de Cloud Functions:
+Si necesitas ejecutar procesos adicionales o realizar acciones específicas antes o después del proceso ETL, considera integrar Google Cloud Functions en tu flujo de trabajo.
+8. Alertas y Monitoreo:
+Configura alertas para recibir notificaciones en caso de que haya errores o desviaciones inesperadas durante el proceso ETL. Puedes usar Google Cloud Monitoring para monitorear la salud de tu sistema.
+9. Backup y Snapshots:
+Realiza copias de seguridad periódicas o crea snapshots de tu dataset en BigQuery antes de ejecutar el proceso ETL. Esto proporcionará un punto de recuperación en caso de problemas.
 
+<br />
+<br />
 
+La empresa quiere implementar un sistema de descuentos mediante cupones. ¿Cómo modificarías el modelo de datos para agregarlo? Describa su propuesta, justifique y explique por qué es la mejor opción. No es necesario que lo implemente. (teniendo en cuenta que todo esta en una tabla llamada trips)
 
+Creamos la tabla copones donde tendremos la informacion de los cupones disponibles, mismo caso, podriamos generar mas datos pero al aplicar las 3 FN se crearian mas tablas:
+```sql
+CREATE TABLE coupons (
+    coupon_id SERIAL PRIMARY KEY,
+    coupon_code VARCHAR(20) UNIQUE,
+    discount_percentage NUMERIC, -- Porcentaje de descuento del cupón
+    expiration_date DATE -- Fecha de vencimiento del cupón
+);
 ```
-docker-compose -f docker-compose.yml up
+
+Creamos la tabla de uso de cupones para tener informacion sobre el uso de los cupones en los viajes.
+```sql
+CREATE TABLE coupon_usage (
+    coupon_usage_id SERIAL PRIMARY KEY,
+    trip_id INTEGER UNIQUE REFERENCES trips(trip_id),
+    coupon_id INTEGER REFERENCES coupons(coupon_id)
+);
 ```
 
+Modificamos la tabla trips para saber quien aplico el cupon de descuento
+```sql
+ALTER TABLE trips
+ADD COLUMN discount_amount NUMERIC DEFAULT 0;
+```
 
+Justificacion
+1. Separamos responsablidades entre los datos de los viajes y los datos relacionados a los cupones, con esto ganamos mantenimiento y gestion de datos, si aplicaramos el modelo de datos que tenemos arriba, se tendria seria el mismo principio.
+2. Ganamos escalabilidad ingresando diferentes tipos de cupones y descuentos en caso que existan a futuros, ejemplos: descuentos fijos, con porcentajes, por tiempo limitado, convenios con medios de pago, etc).
+3. Tenemos una mayor integridad en base a las FK de las tablas.
+4. Seguimiento mas claro de quien y cuando se aplicaron los cupones.
+5. Adaptabilidad en base a futuros requisitos, en caso que se cambie el sistema de cupones no afecta a la data principal.
+6. Tenemos consistencia y claridad en base a cuanto fue el monto especifico del cupon y en que viaje.
+7. Nos permite generar querys mas simples en base a Joins ya que tenemos separada la data.
 
+Si nos ponemos a pensar esta seria mejor opcion siempre y cuando se aplique de la misma forma a nivel de Postgres, si lo llevamos a un dataset en GCP, lo ideal seria generar tablas separadas como se aprecia en el modelo de datos anteriormente generado, teniendo la data tal como se extrae y generando procesos schedulados para genrar y llegar con mayor precion a la capa de visualizacion pensando en una mirada de Datalake.
+![image](https://github.com/bastyy/de_awto_test/assets/31254863/8496f27a-6de8-4a96-861f-0164e914d484)
+
+<br />
+
+# Fin 
+Muchas gracias, me gustaria saber como poder conectar mi host (dns local IPV4) a la misma red de Docker (postgres).
+
+Gracias. :)
 
