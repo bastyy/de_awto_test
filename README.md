@@ -282,10 +282,50 @@ for fecha, data in resumen_diario_data.items():
         (fecha, data['cantidad_viajes'], data['suma_ingresos'], data['promedio_ingresos'], data['suma_distancia_km'])
     )
 ```
-
-
-
-
+Señale (sin necesidad de implementar) qué procesos podría desarrollar para asegurar la consistencia de los datos en la tabla resumen_diario.
+Procesos y/o mejoras (pensando que estamos onpremises)
+1. Transacciones Atómicas:
+Asegúrate de que todas las operaciones que modifican los datos de la tabla resumen_diario estén dentro de transacciones atómicas. Esto garantizará que todas las operaciones se completen correctamente o que no tengan ningún efecto.
+2. Bloqueo de Tabla:
+Antes de ejecutar el proceso ETL, considera utilizar un bloqueo de tabla (LOCK TABLE) para evitar que otras transacciones interfieran con la actualización de la tabla durante el proceso.
+3. Procedimiento Almacenado:
+Considera encapsular la lógica del proceso ETL en un procedimiento almacenado en la base de datos. Los procedimientos almacenados pueden simplificar el manejo de transacciones y asegurar la consistencia de datos.
+4. Registro de Errores:
+Implementa un sistema de registro de errores para registrar cualquier problema durante el proceso ETL. Si algo sale mal, tendrás un registro detallado para investigar y corregir los problemas.
+5. Backup Regular:
+Realiza copias de seguridad regulares de la base de datos antes de ejecutar el proceso ETL. Esto proporciona un punto de recuperación en caso de que algo salga mal.
+6. Restricciones de Integridad:
+Utiliza restricciones de integridad en la base de datos para asegurar que ciertas condiciones se cumplan. Por ejemplo, puedes agregar restricciones de clave única o verificar restricciones en las columnas que deben cumplir ciertos criterios.
+7. Auditoría:
+Implementa un sistema de auditoría para realizar un seguimiento de las modificaciones en la tabla resumen_diario. Esto puede ayudar a identificar y corregir problemas de consistencia.
+8. Validaciones Pre-Ejecución:
+Antes de ejecutar el proceso ETL, realiza validaciones previas para asegurarte de que los datos de entrada sean coherentes y cumplan con los requisitos esperados.
+9. Uso de Triggers:
+Considera el uso de triggers para automatizar ciertas acciones antes o después de las operaciones en la tabla resumen_diario. Por ejemplo, puedes usar un trigger BEFORE INSERT para validar datos antes de la inserción.
+10. Monitoreo Continuo:
+Establece un sistema de monitoreo continuo para supervisar el rendimiento y la integridad de la base de datos. Esto puede incluir alertas automáticas en caso de errores o desviaciones inesperadas, tratar de realizar una conexion a una herramienta como Grafana u otra a nivel de monitoreo.
+11. Alarmas:
+Implementar alarmas en caso que un proceso falle, asi se puede saber en el momento y no esperar hasta el final.
+<br />
+Si estuvieramos en BigQuery, lo mismo seria:
+1. Transacciones en BigQuery:
+BigQuery no admite transacciones en el sentido tradicional, ya que está diseñado para consultas analíticas a gran escala. Sin embargo, las operaciones individuales son atómicas. Puedes organizar tu proceso de ETL de manera que las operaciones críticas (como la actualización de datos en la tabla resumen_diario) se realicen en pasos separados y puedan ser revertidas en caso de errores.
+2. Jobs Programados:
+Usa la funcionalidad de programación de trabajos (jobs) en BigQuery para ejecutar el proceso ETL de manera programada y automática a las 23:59 horas todos los días.
+3. Partitioning (costos) y Clustering (en caso que sea muuucha data):
+Aprovecha las capacidades de particionamiento y clustering en BigQuery. Puedes particionar la tabla resumen_diario por fecha para facilitar la administración de datos diarios y mejorar el rendimiento de las consultas.
+4. Operaciones Atómicas con Copia de Tabla:
+Realiza operaciones de copia de tabla para aplicar cambios atómicamente. Puedes realizar una copia de la tabla existente, aplicar las transformaciones necesarias en la nueva copia y luego reemplazar la tabla original con la copia. Esto ayuda a garantizar que la tabla resumen_diario se actualice de manera coherente.
+5. Auditoría y Registro de Cambios (Dataplex - Linage):
+Utiliza la funcionalidad de auditoría y registro de cambios en BigQuery para realizar un seguimiento de las modificaciones en la tabla resumen_diario. Puedes consultar los registros de auditoría para identificar y corregir problemas de consistencia.
+6. Validaciones y Limpieza de Datos:
+Realiza validaciones de datos antes de ejecutar el proceso ETL. Puedes usar consultas SQL para identificar y corregir posibles problemas de datos antes de cargarlos en la tabla resumen_diario.
+7. Uso de Cloud Functions:
+Si necesitas ejecutar procesos adicionales o realizar acciones específicas antes o después del proceso ETL, considera integrar Google Cloud Functions en tu flujo de trabajo.
+8. Alertas y Monitoreo:
+Configura alertas para recibir notificaciones en caso de que haya errores o desviaciones inesperadas durante el proceso ETL. Puedes usar Google Cloud Monitoring para monitorear la salud de tu sistema.
+9. Backup y Snapshots:
+Realiza copias de seguridad periódicas o crea snapshots de tu dataset en BigQuery antes de ejecutar el proceso ETL. Esto proporcionará un punto de recuperación en caso de problemas.
 
 
 ```
