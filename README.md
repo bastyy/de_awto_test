@@ -1,6 +1,9 @@
 # Test Data Engineer awto
 
-Levantar Entorno:
+
+## Primer paso
+
+### Levantar Entorno
 <br />
 La base de datos Postgres en Docker, en este ejemplo se uso por medio de un docker-compose lo cual se adjunto en el repo.
 
@@ -378,4 +381,3 @@ Si nos ponemos a pensar esta seria mejor opcion siempre y cuando se aplique de l
 Muchas gracias, me gustaria saber como poder conectar mi host (dns local IPV4) a la misma red de Docker (postgres).
 
 Gracias. :)
-
