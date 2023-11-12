@@ -168,13 +168,129 @@ cur.close()
 conn.close()
 
 ```
-# Aca no se pudo realizar la conexion por problemas de DNS y Networking, ya que el contenedor esta en una red distinta
-# al de mi DNS :(
+# Aca no se pudo realizar la conexion por problemas de DNS y Networking, ya que el contenedor esta en una red distinta al de mi DNS :(
+
+5.- Cree una nueva tabla en Postgres llamada resumen_diario.
+<br />
+Para esto se genero el siguiente codigo en Python:
+<br />
+```python
+import csv
+import psycopg2
+from datetime import datetime, date
+from collections import defaultdict
+
+# Conexión a la base de datos
+conn = psycopg2.connect(
+    host="tu_host",
+    database="tu_base_de_datos",
+    user="tu_usuario",
+    password="tu_contraseña"
+)
+
+# Crear un cursor
+cur = conn.cursor()
+
+# Ruta del archivo CSV
+csv_file_path = "ruta_del_archivo.csv"
+
+# Diccionario para almacenar datos resumen_diario
+resumen_diario_data = defaultdict(lambda: {'cantidad_viajes': 0, 'suma_ingresos': 0, 'suma_distancia_km': 0})
+
+# Leer el archivo CSV y realizar el procesamiento
+with open(csv_file_path, 'r') as file:
+    reader = csv.DictReader(file)
+    
+    for row in reader:
+        # Convertir fechas de texto a objetos de fecha
+        booking_time = datetime.strptime(row['booking_time'], '%Y-%m-%d %H:%M:%S')
+        
+        # Extraer información de la fecha
+        fecha = booking_time.date()
+
+        # Actualizar datos en el diccionario resumen_diario
+        resumen_diario_data[fecha]['cantidad_viajes'] += 1
+        resumen_diario_data[fecha]['suma_ingresos'] += float(row['price_total'])
+        resumen_diario_data[fecha]['suma_distancia_km'] += float(row['travel_dist'])
+
+# Calcular el promedio de ingresos
+for fecha, data in resumen_diario_data.items():
+    data['promedio_ingresos'] = data['suma_ingresos'] / data['cantidad_viajes'] if data['cantidad_viajes'] > 0 else 0
+
+# Insertar datos en la tabla resumen_diario
+for fecha, data in resumen_diario_data.items():
+    cur.execute(
+        "INSERT INTO resumen_diario (fecha, cantidad_viajes, suma_ingresos, promedio_ingresos, suma_distancia_km) "
+        "VALUES (%s, %s, %s, %s, %s)",
+        (fecha, data['cantidad_viajes'], data['suma_ingresos'], data['promedio_ingresos'], data['suma_distancia_km'])
+    )
+
+# Confirmar los cambios y cerrar la conexión
+conn.commit()
+cur.close()
+conn.close()
+
+```
+<br />
+Ahora expliquemos el codigo
+<br />
+Conexion a la base de datos postgres:
+```python
+conn = psycopg2.connect(
+    host="tu_host",
+    database="tu_base_de_datos",
+    user="tu_usuario",
+    password="tu_contraseña"
+)
+
+```
+Se crea un cursos para que recorra la tabla
+```python
+cur = conn.cursor()
+```
+Le decimos donde esta el archivo
+```python
+csv_file_path = "ruta_del_archivo.csv"
+```
+Generamos un doccionario para almacenar datos temporales
+```python
+resumen_diario_data = defaultdict(lambda: {'cantidad_viajes': 0, 'suma_ingresos': 0, 'suma_distancia_km': 0})
+```
+Abrinos y leemos el CSV 
+```python
+with open(csv_file_path, 'r') as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        # ... (ver siguiente punto)
+```
+Procesamos cada fila del CSV pero nos enfocamos principalmente en el booking_time y la extraimos
+```python
+booking_time = datetime.strptime(row['booking_time'], '%Y-%m-%d %H:%M:%S')
+fecha = booking_time.date()
+```
+Calculamos el promedio para cada fecha del diccionario
+```python
+for fecha, data in resumen_diario_data.items():
+    data['promedio_ingresos'] = data['suma_ingresos'] / data['cantidad_viajes'] if data['cantidad_viajes'] > 0 else 0
+```
+Y para finalizar insermaos los datos:
+```python
+for fecha, data in resumen_diario_data.items():
+    cur.execute(
+        "INSERT INTO resumen_diario (fecha, cantidad_viajes, suma_ingresos, promedio_ingresos, suma_distancia_km) "
+        "VALUES (%s, %s, %s, %s, %s)",
+        (fecha, data['cantidad_viajes'], data['suma_ingresos'], data['promedio_ingresos'], data['suma_distancia_km'])
+    )
+```
 
 
 
 
 
+
+```
+docker-compose -f docker-compose.yml up
+```
 
 
 
