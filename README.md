@@ -373,6 +373,7 @@ Justificacion
 7. Nos permite generar querys mas simples en base a Joins ya que tenemos separada la data.
 
 Si nos ponemos a pensar esta seria mejor opcion siempre y cuando se aplique de la misma forma a nivel de Postgres, si lo llevamos a un dataset en GCP, lo ideal seria generar tablas separadas como se aprecia en el modelo de datos anteriormente generado, teniendo la data tal como se extrae y generando procesos schedulados para genrar y llegar con mayor precion a la capa de visualizacion pensando en una mirada de Datalake.
+<br />
 (https://github.com/bastyy/de_awto_test/assets/31254863/8496f27a-6de8-4a96-861f-0164e914d484)
 
 <br />
