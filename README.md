@@ -111,7 +111,7 @@ en donde se pueden agregar mas tablas.
 <br />
 Aca la base de datos se creo y se llama postgres (que viene por defecto en docker)
 <br />
-![image](https://github.com/bastyy/de_awto_test/assets/31254863/02195dc1-4e91-4793-a184-758deeab5509)
+![Postgres-local](https://github.com/bastyy/de_awto_test/assets/31254863/02195dc1-4e91-4793-a184-758deeab5509)
 <br />
 <br />
 3.- Crea las tablas del modelo de datos que diseñaste en el paso 1. Puede usar scripts SQL o código en Python.
@@ -374,7 +374,7 @@ Justificacion
 
 Si nos ponemos a pensar esta seria mejor opcion siempre y cuando se aplique de la misma forma a nivel de Postgres, si lo llevamos a un dataset en GCP, lo ideal seria generar tablas separadas como se aprecia en el modelo de datos anteriormente generado, teniendo la data tal como se extrae y generando procesos schedulados para genrar y llegar con mayor precion a la capa de visualizacion pensando en una mirada de Datalake.
 <br />
-(https://github.com/bastyy/de_awto_test/assets/31254863/8496f27a-6de8-4a96-861f-0164e914d484)
+![Datalake](https://github.com/bastyy/de_awto_test/assets/31254863/8496f27a-6de8-4a96-861f-0164e914d484)
 
 <br />
 
