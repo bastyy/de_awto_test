@@ -377,7 +377,7 @@ Si nos ponemos a pensar esta seria mejor opcion siempre y cuando se aplique de l
 ![Datalake](https://github.com/bastyy/de_awto_test/assets/31254863/8496f27a-6de8-4a96-861f-0164e914d484)
 
 <br />
-
+# Para este desarollo se ocupo ChatGPT y Stackoverflow para poder solucionar el error de conexion, pero no hubo reusltados positivos, ademas se valido con IA el modelo de datos generado de forma manual, para ver si hacia sentido. El script era uno que tenia anteriormente usado por lo que simplemente se modifico y se le pidio ayuda sobre el diccionario en python a nivel de collection.
 # Fin 
 Muchas gracias, me gustaria saber como poder conectar mi host (dns local IPV4) a la misma red de Docker (postgres).
 
